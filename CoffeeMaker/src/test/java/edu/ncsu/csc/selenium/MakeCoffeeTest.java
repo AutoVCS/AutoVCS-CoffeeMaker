@@ -10,6 +10,9 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import edu.ncsu.csc.coffee_maker.models.persistent.Inventory;
+import edu.ncsu.csc.coffee_maker.models.persistent.Recipe;
+
 /**
  * Tests Make Coffee functionality.
  *
@@ -25,6 +28,12 @@ public class MakeCoffeeTest extends SeleniumTest {
     @Override
     @Before
     protected void setUp () throws Exception {
+        Inventory.deleteAll( Inventory.class );
+
+        /* Create lots of inventory to use */
+        final Inventory ivt = new Inventory( 500, 500, 500, 500 );
+        ivt.save();
+
         super.setUp();
         baseUrl = "http://localhost:8080";
         driver.manage().timeouts().implicitlyWait( 20, TimeUnit.SECONDS );
@@ -40,30 +49,21 @@ public class MakeCoffeeTest extends SeleniumTest {
      */
     private void createRecipe ( final String name, final int price, final int amtCoffee, final int amtMilk,
             final int amtSugar, final int amtChocolate ) throws Exception {
-        driver.get( baseUrl + "" );
-        driver.findElement( By.linkText( "Add a Recipe" ) ).click();
 
-        // Enter the recipe information
-        final String recipeName = "Coffee";
-        driver.findElement( By.name( "name" ) ).clear();
-        driver.findElement( By.name( "name" ) ).sendKeys( recipeName );
-        driver.findElement( By.name( "price" ) ).clear();
-        driver.findElement( By.name( "price" ) ).sendKeys( price + "" );
-        driver.findElement( By.name( "coffee" ) ).clear();
-        driver.findElement( By.name( "coffee" ) ).sendKeys( amtCoffee + "" );
-        driver.findElement( By.name( "milk" ) ).clear();
-        driver.findElement( By.name( "milk" ) ).sendKeys( amtMilk + "" );
-        driver.findElement( By.name( "sugar" ) ).clear();
-        driver.findElement( By.name( "sugar" ) ).sendKeys( amtSugar + "" );
-        driver.findElement( By.name( "chocolate" ) ).clear();
-        driver.findElement( By.name( "chocolate" ) ).sendKeys( amtChocolate + "" );
+        final Recipe e = Recipe.getByName( name );
+        if ( null != e ) {
+            e.delete();
+        }
 
-        // Submit the recipe.
-        driver.findElement( By.cssSelector( "input[type=\"submit\"]" ) ).click();
-        Thread.sleep( 5000 );
+        final Recipe recipe = new Recipe();
+        recipe.setName( name );
+        recipe.setPrice( price );
+        recipe.setCoffee( amtCoffee );
+        recipe.setMilk( amtMilk );
+        recipe.setSugar( amtSugar );
+        recipe.setChocolate( amtChocolate );
+        recipe.save();
 
-        // Make sure the proper message was displayed.
-        assertTextPresent( "Recipe Created", driver );
     }
 
     /**
@@ -76,7 +76,7 @@ public class MakeCoffeeTest extends SeleniumTest {
      */
     private boolean selectRecipe ( final String name ) throws InterruptedException {
         final List<WebElement> list = driver.findElements( By.name( "name" ) );
-        Thread.sleep( 5000 );
+        Thread.sleep( 3000 );
 
         // Select the recipe
         for ( final WebElement we : list ) {
@@ -84,7 +84,7 @@ public class MakeCoffeeTest extends SeleniumTest {
                 we.click();
                 // Wait for thread to perform operation
                 while ( !we.isSelected() ) {
-                    Thread.sleep( 5000 );
+                    Thread.sleep( 1000 );
                 }
 
                 return true;
@@ -124,7 +124,7 @@ public class MakeCoffeeTest extends SeleniumTest {
         System.out.println( recipeName + " " + price + " " + amtCoffee + " " + amtMilk + " " + " " + amtSugar + " "
                 + amtChocolate + " " + paid + " " + expectedMessage );
         driver.findElement( By.cssSelector( "input[type=\"submit\"]" ) ).click();
-        Thread.sleep( 5000 );
+        Thread.sleep( 1000 );
 
         // Make sure the proper message was displayed.
         assertTextPresent( expectedMessage, driver );
@@ -166,5 +166,7 @@ public class MakeCoffeeTest extends SeleniumTest {
         if ( !"".equals( verificationErrorString ) ) {
             fail( verificationErrorString );
         }
+        /* Remove our inventory so we don't mess up any future test */
+        Inventory.deleteAll( Inventory.class );
     }
 }

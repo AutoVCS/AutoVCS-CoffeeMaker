@@ -50,7 +50,7 @@ public class APIRecipeController extends APIController {
         final Recipe recipe = Recipe.getByName( name );
         return null == recipe
                 ? new ResponseEntity( errorResponse( "No recipe found with name " + name ), HttpStatus.NOT_FOUND )
-                : new ResponseEntity( successResponse( recipe.getName() + " recieved" ), HttpStatus.OK );
+                : new ResponseEntity( recipe, HttpStatus.OK );
     }
 
     /**

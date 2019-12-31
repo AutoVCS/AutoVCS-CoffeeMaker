@@ -27,12 +27,6 @@
 				var name = $scope.name;
 				$scope.submissionFailure=false;
 				$scope.submissionSuccess=false;
-				
-				/* $http.get("/api/v1/recipes/" + name).then(function(response) {
-					console.log(response);
-					var recipe = response.data;
-					$scope.recipeS=response.data; */
-					
 					var deferred = $q.defer();
 			        $http.post("/api/v1/makecoffee/" + name, amtPaid)
 			            .then(
