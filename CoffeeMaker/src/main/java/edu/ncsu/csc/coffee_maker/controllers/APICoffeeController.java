@@ -23,7 +23,7 @@ import edu.ncsu.csc.coffee_maker.models.persistent.Recipe;
  */
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
-public class APICoffeeController extends APIController{
+public class APICoffeeController extends APIController {
   
     /**
      * REST API method to make coffee by completing a POST request with the ID
