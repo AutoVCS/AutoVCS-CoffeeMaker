@@ -25,13 +25,18 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class Inventory extends DomainObject<Inventory> {
 
+    /** id for inventory entry */
     private Long id;
+    /** amount of coffee */
     @Min ( 0 )
     private int  coffee;
+    /** amount of milk */
     @Min ( 0 )
     private int  milk;
+    /** amount of sugar */
     @Min ( 0 )
     private int  sugar;
+    /** amount of chocolate */
     @Min ( 0 )
     private int  chocolate;
 
@@ -113,7 +118,8 @@ public class Inventory extends DomainObject<Inventory> {
      * @param chocolate
      *            amount of chocolate
      * @return checked amount of chocolate
-     * @throws InventoryException
+     * @throws IllegalArgumentException
+     *             if the parameter isn't a positive integer
      */
     public int checkChocolate ( final String chocolate ) throws IllegalArgumentException {
         int amtChocolate = 0;
@@ -158,7 +164,8 @@ public class Inventory extends DomainObject<Inventory> {
      * @param coffee
      *            amount of coffee
      * @return checked amount of coffee
-     * @throws InventoryException
+     * @throws IllegalArgumentException
+     *             if the parameter isn't a positive integer
      */
     public int checkCoffee ( final String coffee ) throws IllegalArgumentException {
         int amtCoffee = 0;
@@ -203,7 +210,8 @@ public class Inventory extends DomainObject<Inventory> {
      * @param milk
      *            amount of milk
      * @return checked amount of milk
-     * @throws InventoryException
+     * @throws IllegalArgumentException
+     *             if the parameter isn't a positive integer
      */
     public int checkMilk ( final String milk ) throws IllegalArgumentException {
         int amtMilk = 0;
@@ -248,7 +256,8 @@ public class Inventory extends DomainObject<Inventory> {
      * @param sugar
      *            amount of sugar
      * @return checked amount of sugar
-     * @throws InventoryException
+     * @throws IllegalArgumentException
+     *             if the parameter isn't a positive integer
      */
     public int checkSugar ( final String sugar ) throws IllegalArgumentException {
         int amtSugar = 0;
@@ -299,7 +308,7 @@ public class Inventory extends DomainObject<Inventory> {
      */
     public boolean useIngredients ( final Recipe r ) {
         if ( enoughIngredients( r ) ) {
-            setCoffee( coffee - r.getCoffee() );
+            setMilk( coffee - r.getCoffee() );
             setMilk( milk - r.getMilk() );
             setSugar( sugar - r.getSugar() );
             setChocolate( chocolate - r.getChocolate() );
@@ -377,6 +386,5 @@ public class Inventory extends DomainObject<Inventory> {
             return i;
         }
 
-        
     }
 }

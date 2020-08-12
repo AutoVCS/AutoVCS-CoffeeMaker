@@ -24,23 +24,30 @@ import org.hibernate.criterion.Criterion;
 @Table ( name = "recipes" )
 public class Recipe extends DomainObject<Recipe> {
 
+	/** Recipe id */
     private Long    id;
 
+    /** Recipe name */
     @NotNull
     private String  name;
 
+    /** Recipe price */
     @Min ( 0 )
     private Integer price;
 
+    /** Amount coffee */
     @Min ( 0 )
     private Integer coffee;
 
+    /** Amount milk */
     @Min ( 0 )
     private Integer milk;
 
+    /** Amount sugar */
     @Min ( 0 )
     private Integer sugar;
 
+    /** Amount chocolate */
     @Min ( 0 )
     private Integer chocolate;
 
@@ -55,6 +62,14 @@ public class Recipe extends DomainObject<Recipe> {
         this.milk = 0;
         this.sugar = 0;
         this.chocolate = 0;
+    }
+    
+    /**
+     * Check if all ingredient fields in the recipe are 0
+     * @return true if all ingredient fields are 0, otherwise return false
+     */
+    public boolean checkRecipe () {
+    	return coffee == 0 && milk == 0 && sugar == 0 && chocolate == 0;
     }
 
     /**

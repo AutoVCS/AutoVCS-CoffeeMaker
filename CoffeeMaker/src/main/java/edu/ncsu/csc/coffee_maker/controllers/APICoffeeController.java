@@ -24,7 +24,7 @@ import edu.ncsu.csc.coffee_maker.models.persistent.Recipe;
 @SuppressWarnings ( { "unchecked", "rawtypes" } )
 @RestController
 public class APICoffeeController extends APIController {
-  
+
     /**
      * REST API method to make coffee by completing a POST request with the ID
      * of the recipe as the path variable and the amount that has been paid as
@@ -40,23 +40,19 @@ public class APICoffeeController extends APIController {
     public ResponseEntity makeCoffee ( @PathVariable ( "name" ) final String name, @RequestBody final int amtPaid ) {
         final Recipe recipe = Recipe.getByName( name );
         if ( recipe == null ) {
-            System.out.println( "No recipe selected" );
-            return new ResponseEntity( errorResponse("No recipe selected"), HttpStatus.NOT_FOUND );
+            return new ResponseEntity( errorResponse( "No recipe selected" ), HttpStatus.NOT_FOUND );
         }
 
-        System.out.println( "recipe: " + recipe.getName() + "    amt: " + amtPaid );
         final int change = makeCoffee( recipe, amtPaid );
         if ( change == amtPaid ) {
             if ( amtPaid < recipe.getPrice() ) {
-                return new ResponseEntity( errorResponse("Not enough money paid"), HttpStatus.CONFLICT );
+                return new ResponseEntity( errorResponse( "Not enough money paid" ), HttpStatus.CONFLICT );
             }
             else {
-                return new ResponseEntity( errorResponse("Not enough inventory"), HttpStatus.CONFLICT );
+                return new ResponseEntity( errorResponse( "Not enough inventory" ), HttpStatus.CONFLICT );
             }
         }
-        System.out.println( "change: " + change );
-        return new ResponseEntity<String>( successResponse("change: " + change), HttpStatus.OK );
-        
+        return new ResponseEntity<String>( successResponse( String.valueOf( change ) ), HttpStatus.OK );
 
     }
 
@@ -70,7 +66,7 @@ public class APICoffeeController extends APIController {
      * @return change if there was enough money to make the coffee, throws
      *         exceptions if not
      */
-    public static int makeCoffee ( final Recipe toPurchase, int amtPaid ) {
+    public static int makeCoffee ( final Recipe toPurchase, final int amtPaid ) {
         int change = amtPaid;
         final Inventory inventory = Inventory.getInventory();
 

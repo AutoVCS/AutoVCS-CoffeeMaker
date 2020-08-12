@@ -2,57 +2,104 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Inventory</title>
-<style>
-.username.ng-valid {
-	background-color: lightgreen;
-}
-
-.username.ng-dirty.ng-invalid-required {
-	background-color: red;
-}
-
-.username.ng-dirty.ng-invalid-min {
-	background-color: yellow;
-}
-
-.email.ng-valid {
-	background-color: lightgreen;
-}
-
-.email.ng-dirty.ng-invalid-required {
-	background-color: red;
-}
-</style>
 <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
 </head>
-<body ng-app="myApp" class="ng-cloak">
-	<div class="generic-container"
-		ng-controller="InventoryController as ctrl">
+
+<body>
+
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('inventoryCtrl', function($scope, $http, $q) {
+			$scope.inventoryOriginal = {
+				coffee : '',
+				milk : '',
+				sugar : '',
+				chocolate : ''
+			};
+
+			$scope.getInventory = function() {
+				$http.get("/api/v1/inventory").then(function(response) {
+					$scope.inventoryOriginal = response.data;
+				}, function(rejection) {
+					console.error("Error while getting Inventory");
+				})
+			}
+
+			$scope.updateInventory = function() {
+				$scope.success = false;
+				$scope.failure = false;
+
+				$http.put("/api/v1/inventory", $scope.inventory).then(
+						function(response) {
+							$scope.getInventory();
+
+						}, function(rejection) {
+							$scope.failure = true;
+							$scope.success = false;
+							console.error("Error while updating Inventory!");
+						});
+				$scope.success = !($scope.failure);
+			}
+
+			$scope.submit = function() {
+				$scope.updateInventory();
+				$scope.reset();
+			}
+
+			$scope.getInventory();
+
+			$scope.reset = function() {
+				$scope.inventory = {
+					coffee : '',
+					milk : '',
+					sugar : '',
+					chocolate : ''
+				};
+
+				if (undefined != $scope.addInventoryForm) {
+					$scope.addInventoryForm.$setPristine(); //reset Form
+				}
+			}
+
+			$scope.reset();
+
+		});
+		/*]]>*/
+	</script>
+
+
+
+	<div class="generic-container ng-cloak" ng-app="myApp"
+		ng-controller="inventoryCtrl as ctrl">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<span class="lead">View Inventory</span>
 			</div>
-			Coffee: <span id="currentCoffee"
-				ng-bind="ctrl.inventoryMaster.coffee"></span><br /> Milk: <span
-				id="currentMilk" ng-bind="ctrl.inventoryMaster.milk"></span><br />
-			Sugar: <span id="currentSugar" ng-bind="ctrl.inventoryMaster.sugar"></span><br />
-			Chocolate: <span id="currentChocolate"
-				ng-bind="ctrl.inventoryMaster.chocolate"></span><br />
 
+			Coffee: <span id="currentCoffee" ng-bind="inventoryOriginal.coffee"></span><br />
+			Milk: <span id="currentMilk" ng-bind="inventoryOriginal.milk"></span><br />
+			Sugar: <span id="currentSugar" ng-bind="inventoryOriginal.sugar"></span><br />
+			Chocolate: <span id="currentChocolate"
+				ng-bind="inventoryOriginal.chocolate"></span><br />
 
 			<div class="panel-heading">
 				<span class="lead">Update Inventory Form </span>
 			</div>
 			<div class="formcontainer">
-				<form ng-submit="ctrl.submit()" name="addInventoryForm"
+				<form ng-submit="submit()" name="addInventoryForm"
 					class="form-horizontal">
 					<div class="row">
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Coffee</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.inventory.coffee"
-									name="coffee" class="coffee form-control input-sm"
+								<input type="text" ng-model="inventory.coffee" name="coffee"
+									class="coffee form-control input-sm"
 									placeholder="Enter amount of coffee" required="0" />
 								<div class="has-error" ng-show="addInventoryForm.$dirty">
 									<span ng-show="addInventoryForm.coffee.$error.required">This
@@ -70,7 +117,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Milk</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.inventory.milk" name="milk"
+								<input type="text" ng-model="inventory.milk" name="milk"
 									class="milk form-control input-sm"
 									placeholder="Enter amount of milk" required="0" />
 								<div class="has-error" ng-show="addInventoryForm.$dirty">
@@ -88,7 +135,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Sugar</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.inventory.sugar" name="sugar"
+								<input type="text" ng-model="inventory.sugar" name="sugar"
 									class="sugar form-control input-sm"
 									placeholder="Enter amount of sugar" required="0" />
 								<div class="has-error" ng-show="addInventoryForm.$dirty">
@@ -107,7 +154,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Chocolate</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.inventory.chocolate"
+								<input type="text" ng-model="inventory.chocolate"
 									name="chocolate" class="chocolate form-control input-sm"
 									placeholder="Enter amount of chocolate" required="0" />
 								<div class="has-error" ng-show="addInventoryForm.$dirty">
@@ -128,7 +175,7 @@
 							<input type="submit" value="Submit"
 								class="btn btn-primary btn-sm"
 								ng-disabled="addInventoryForm.$invalid" />
-							<button type="button" ng-click="ctrl.reset()"
+							<button type="button" ng-click="reset()"
 								class="btn btn-warning btn-sm"
 								ng-disabled="addInventoryForm.$pristine">Reset Form</button>
 						</div>
@@ -143,10 +190,6 @@
 	</div>
 
 
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
-	<script src="js/app.js"></script>
-	<script src="js/service/inventory_service.js"></script>
-	<script src="js/controller/inventory_controller.js"></script>
+
 </body>
 </html>

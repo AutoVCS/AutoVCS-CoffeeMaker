@@ -26,29 +26,80 @@
 <link rel="stylesheet" href="css/bootstrap.css" />
 <link rel="stylesheet" href="css/app.css" />
 </head>
-<body ng-app="myApp" class="ng-cloak">
-	<div class="generic-container"
-		ng-controller="AddRecipeController as ctrl">
+<body>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.js"></script>
+
+	<script>
+		/*<![CDATA[*/
+		var app = angular.module('myApp', []);
+		app.controller('addRecipeCtrl', function($scope, $http, $q) {
+			console.log("Hit!");
+
+			$scope.reset = function() {
+				$scope.recipe = {
+					name : '',
+					price : '',
+					coffee : '',
+					milk : '',
+					sugar : '',
+					chocolate : ''
+				};
+				if (undefined != $scope.addRecipeForm) {
+					$scope.addRecipeForm.$setPristine(); // reset Form
+				}
+			}
+
+			$scope.submit = function() {
+				$scope.addRecipe();
+
+				$scope.reset();
+			}
+
+			$scope.addRecipe = function() {
+				$scope.success = false;
+				$scope.failure = false;
+
+				$http.post("/api/v1/recipes", $scope.recipe).then(
+						function(success) {
+							$scope.success = true;
+							$scope.failure = false;
+						}, function(rejection) {
+							console.error("Error while adding recipe");
+						});
+			}
+
+			$scope.reset();
+
+		});
+		/*]]>*/
+	</script>
+
+
+
+	<div ng-app="myApp" class="generic-container ng-cloak"
+		ng-controller="addRecipeCtrl as ctrl">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<span class="lead">Add a Recipe</span>
 			</div>
 
 			<div class="formcontainer">
-				<form ng-submit="ctrl.submit()" name="addRecipeForm"
+				<form ng-submit="submit()" name="addRecipeForm"
 					class="form-horizontal">
 
 					<div class="row">
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Name</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.name" name="name"
+								<input type="text" ng-model="recipe.name" name="name"
 									class="name form-control input-sm"
 									placeholder="Enter recipe name" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
 									<span ng-show="addRecipeForm.name.$error.required">This
-										is a required field</span><span ng-show="addRecipeForm.name.$invalid">This
-										field is invalid </span>
+										is a required field</span> <span
+										ng-show="addRecipeForm.name.$invalid">This field is
+										invalid </span>
 								</div>
 							</div>
 						</div>
@@ -58,7 +109,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Price</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.price" name="price"
+								<input type="text" ng-model="recipe.price" name="price"
 									class="price form-control input-sm"
 									placeholder="Enter recipe price" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
@@ -76,7 +127,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Coffee</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.coffee" name="coffee"
+								<input type="text" ng-model="recipe.coffee" name="coffee"
 									class="coffee form-control input-sm"
 									placeholder="Enter amount of coffee" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
@@ -95,7 +146,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Milk</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.milk" name="milk"
+								<input type="text" ng-model="recipe.milk" name="milk"
 									class="milk form-control input-sm"
 									placeholder="Enter amount of milk" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
@@ -113,7 +164,7 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Sugar</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.sugar" name="sugar"
+								<input type="text" ng-model="recipe.sugar" name="sugar"
 									class="sugar form-control input-sm"
 									placeholder="Enter amount of sugar" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
@@ -132,8 +183,8 @@
 						<div class="form-group col-md-12">
 							<label class="col-md-2 control-lable" for="file">Chocolate</label>
 							<div class="col-md-7">
-								<input type="text" ng-model="ctrl.recipe.chocolate"
-									name="chocolate" class="chocolate form-control input-sm"
+								<input type="text" ng-model="recipe.chocolate" name="chocolate"
+									class="chocolate form-control input-sm"
 									placeholder="Enter amount of chocolate" required="0" />
 								<div class="has-error" ng-show="addRecipeForm.$dirty">
 									<span ng-show="addRecipeForm.chocolate.$error.required">This
@@ -152,7 +203,7 @@
 							<input type="submit" value="Submit"
 								class="btn btn-primary btn-sm"
 								ng-disabled="addRecipeForm.$invalid" />
-							<button type="button" ng-click="ctrl.reset()"
+							<button type="button" ng-click="reset()"
 								class="btn btn-warning btn-sm"
 								ng-disabled="addRecipeForm.$pristine">Reset Form</button>
 						</div>
@@ -167,10 +218,6 @@
 	</div>
 
 
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
-	<script src="js/app.js"></script>
-	<script src="js/service/add_recipe_service.js"></script>
-	<script src="js/controller/add_recipe_controller.js"></script>
+
 </body>
 </html>

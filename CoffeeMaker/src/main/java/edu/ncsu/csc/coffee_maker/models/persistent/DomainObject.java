@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -38,7 +42,7 @@ import edu.ncsu.csc.coffee_maker.util.HibernateUtil;
 @SuppressWarnings ( { "unchecked", "rawtypes" } ) // generally a bad idea but
                                                   // Hibernate returns a List<?>
                                                   // that we want to cast
-public abstract class DomainObject <D extends DomainObject<D>> {
+public abstract class DomainObject<D extends DomainObject<D>> {
 
     /**
      * Lots of DomainObjects are retrieved by ID. This way we get compile-time
@@ -55,12 +59,17 @@ public abstract class DomainObject <D extends DomainObject<D>> {
      *            class to find DomainObjects for
      * @return A List of all records for the selected type.
      */
-    protected static List< ? extends DomainObject> getAll ( final Class cls ) {
-        List< ? extends DomainObject> results = null;
+    protected static List<? extends DomainObject> getAll ( final Class cls ) {
+        List<? extends DomainObject> results = null;
         final Session session = HibernateUtil.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            results = session.createCriteria( cls ).list();
+            CriteriaBuilder builder = session.getCriteriaBuilder();
+            CriteriaQuery criteria = builder.createQuery(cls);
+            Root classRoot = criteria.from(cls);
+            criteria.select(classRoot);
+            
+            results =  session.createQuery(criteria).getResultList();
         }
         finally {
             try {
@@ -135,10 +144,10 @@ public abstract class DomainObject <D extends DomainObject<D>> {
      *            List of Criterion to AND together and search by
      * @return The resulting list of elements found
      */
-    protected static List< ? extends DomainObject> getWhere ( final Class cls, final List<Criterion> criteriaList ) {
+    protected static List<? extends DomainObject> getWhere ( final Class cls, final List<Criterion> criteriaList ) {
         final Session session = HibernateUtil.getSessionFactory().openSession();
 
-        List< ? extends DomainObject> results = null;
+        List<? extends DomainObject> results = null;
         try {
             session.beginTransaction();
             final Criteria c = session.createCriteria( cls );

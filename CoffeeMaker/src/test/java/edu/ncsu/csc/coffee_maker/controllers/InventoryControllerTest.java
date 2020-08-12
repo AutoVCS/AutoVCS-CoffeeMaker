@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
  * @author Sarah Heckman
  */
 @RunWith ( SpringRunner.class )
-@WebMvcTest ( InventoryController.class )
+@WebMvcTest ( MappingController.class )
 public class InventoryControllerTest {
 
     @Autowired

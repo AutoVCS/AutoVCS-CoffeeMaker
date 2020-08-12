@@ -24,7 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import edu.ncsu.csc.coffee_maker.controllers.IndexController;
+import edu.ncsu.csc.coffee_maker.controllers.MappingController;
 
 /**
  * Tests that the web application is built and runs correctly.
@@ -42,7 +42,7 @@ public class ApplicationTest {
     private MockMvc         mockMvc;
 
     @Autowired
-    private IndexController indexController;
+    private MappingController mappingController;
 
     /**
      * Testing that the main page (as represented by the controller) loads.
@@ -56,7 +56,7 @@ public class ApplicationTest {
         this.mockMvc.perform( get( "/" ) ).andDo( print() ).andExpect( status().isOk() );
 
         // Checks that the controller for the index page is not null
-        assertThat( indexController ).isNotNull();
+        assertThat( mappingController ).isNotNull();
     }
 
 }

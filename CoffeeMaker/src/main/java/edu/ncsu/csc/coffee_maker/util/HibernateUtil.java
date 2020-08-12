@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
  */
 public class HibernateUtil {
 
+	/** SessionFactory for CoffeeMaker */
     private static SessionFactory sessionFactory = buildSessionFactory();
 
     private static SessionFactory buildSessionFactory () {
