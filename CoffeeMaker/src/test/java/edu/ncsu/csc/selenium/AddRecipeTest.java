@@ -8,6 +8,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
 
+import edu.ncsu.csc.coffee_maker.models.persistent.Recipe;
+
 /**
  * Tests Add Recipe functionality.
  *
@@ -75,6 +77,17 @@ public class AddRecipeTest extends SeleniumTest {
      */
     @Test
     public void testAddRecipe2 () throws Exception {
+    	
+    	// create a duplicate recipe
+    	Recipe r = new Recipe();
+    	r.setChocolate(1);
+    	r.setCoffee(3);
+    	r.setMilk(1);
+    	r.setSugar(1);
+    	r.setPrice(50);
+    	r.setName("Coffee");
+    	r.save();
+    	
         addRecipeHelper();
 
         assertTextPresent( "Error while adding recipe", driver );

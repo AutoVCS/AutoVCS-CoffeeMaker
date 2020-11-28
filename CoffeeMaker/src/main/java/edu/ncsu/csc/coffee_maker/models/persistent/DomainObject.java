@@ -1,5 +1,6 @@
 package edu.ncsu.csc.coffee_maker.models.persistent;
 
+
 import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -8,16 +9,15 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
 import org.hibernate.Criteria;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.ncsu.csc.coffee_maker.util.HibernateUtil;
+
 
 /**
  * The common super-class for all database entities. This is done to centralize
@@ -42,7 +42,7 @@ import edu.ncsu.csc.coffee_maker.util.HibernateUtil;
 @SuppressWarnings ( { "unchecked", "rawtypes" } ) // generally a bad idea but
                                                   // Hibernate returns a List<?>
                                                   // that we want to cast
-public abstract class DomainObject<D extends DomainObject<D>> {
+public abstract class DomainObject <D extends DomainObject<D>> {
 
     /**
      * Lots of DomainObjects are retrieved by ID. This way we get compile-time
@@ -59,17 +59,13 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      *            class to find DomainObjects for
      * @return A List of all records for the selected type.
      */
-    protected static List<? extends DomainObject> getAll ( final Class cls ) {
-        List<? extends DomainObject> results = null;
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+    @Transactional ( readOnly = true )
+    protected static List< ? extends DomainObject> getAll ( final Class cls ) {
+        List< ? extends DomainObject> results = null;
+        final Session session = HibernateUtil.openSession();
         try {
             session.beginTransaction();
-            CriteriaBuilder builder = session.getCriteriaBuilder();
-            CriteriaQuery criteria = builder.createQuery(cls);
-            Root classRoot = criteria.from(cls);
-            criteria.select(classRoot);
-            
-            results =  session.createQuery(criteria).getResultList();
+            results = session.createCriteria( cls ).list();
         }
         finally {
             try {
@@ -144,10 +140,11 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      *            List of Criterion to AND together and search by
      * @return The resulting list of elements found
      */
-    protected static List<? extends DomainObject> getWhere ( final Class cls, final List<Criterion> criteriaList ) {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+    @Transactional ( readOnly = true )
+    protected static List< ? extends DomainObject> getWhere ( final Class cls, final List<Criterion> criteriaList ) {
+        final Session session = HibernateUtil.openSession();
 
-        List<? extends DomainObject> results = null;
+        List< ? extends DomainObject> results = null;
         try {
             session.beginTransaction();
             final Criteria c = session.createCriteria( cls );
@@ -180,7 +177,7 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      *            class to delete instances of
      */
     public static void deleteAll ( final Class cls ) {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+        final Session session = HibernateUtil.openSession();
         session.beginTransaction();
         final List<DomainObject> instances = session.createCriteria( cls ).list();
         for ( final DomainObject d : instances ) {
@@ -196,7 +193,7 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      * exists in the DB, then the existing record will be updated.
      */
     public void save () {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+        final Session session = HibernateUtil.openSession();
         session.beginTransaction();
         session.saveOrUpdate( this );
         session.getTransaction().commit();
@@ -205,11 +202,31 @@ public abstract class DomainObject<D extends DomainObject<D>> {
     }
 
     /**
+     * Saves all DomainObjects in a list into the database. New object instances
+     * will be created in the database while existing object instances will be
+     * updated.
+     *
+     * @param objects
+     *            List of DomainObjects
+     */
+    public static void saveAll ( final List< ? extends DomainObject> objects ) {
+        final Session session = HibernateUtil.openSession();
+        session.beginTransaction();
+
+        for ( final DomainObject obj : objects ) {
+            session.saveOrUpdate( obj );
+        }
+
+        session.getTransaction().commit();
+        session.close();
+    }
+
+    /**
      * Deletes the selected DomainObject from the database. This is operation
      * cannot be reversed.
      */
     public void delete () {
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+        final Session session = HibernateUtil.openSession();
         session.beginTransaction();
         session.delete( this );
         session.getTransaction().commit();
@@ -226,6 +243,7 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      *            id of object
      * @return object with given id
      */
+    @Transactional ( readOnly = true )
     public static DomainObject getById ( final Class cls, final Object id ) {
         DomainObject obj;
         try {
@@ -234,10 +252,17 @@ public abstract class DomainObject<D extends DomainObject<D>> {
         catch ( final Exception e ) {
             return null;
         }
-        final Session session = HibernateUtil.getSessionFactory().openSession();
+
+        final Session session = HibernateUtil.openSession();
         session.beginTransaction();
-        session.load( obj, (Serializable) id );
-        session.getTransaction().commit();
+        try {
+            session.load( obj, (Serializable) id );
+            session.getTransaction().commit();
+        }
+        catch ( final ObjectNotFoundException e ) {
+            session.close();
+            return null;
+        }
         session.close();
         return obj;
     }
@@ -255,22 +280,14 @@ public abstract class DomainObject<D extends DomainObject<D>> {
      *            The value for the field in question
      * @return object associated with class and field
      */
+    @Transactional ( readOnly = true )
     public static DomainObject getBy ( final Class cls, final String field, final String value ) {
-        final List<Field> fields = Arrays.asList( cls.getDeclaredFields() );
-        for ( final DomainObject d : getAll( cls ) ) {
-            for ( final Field f : fields ) {
-                f.setAccessible( true );
-                try {
-                    if ( f.get( d ).equals( value ) ) {
-                        return d;
-                    }
-                }
-                catch ( final Exception e ) {
-                    // Ignore exception
-                }
-            }
+        try {
+            return getWhere( cls, eqList( field, value ) ).get( 0 );
         }
-        return null;
+        catch ( final Exception e ) {
+            return null;
+        }
     }
 
     /**

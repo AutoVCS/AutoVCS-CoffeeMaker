@@ -1,5 +1,6 @@
 package edu.ncsu.csc.coffee_maker.util;
 
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -7,6 +8,7 @@ import org.hibernate.cfg.Configuration;
  * A utility class for setting up the Hibernate SessionFactory
  *
  * @author Elizabeth Gilbert
+ * @author Kai Presler-Marshall
  */
 public class HibernateUtil {
 
@@ -30,8 +32,12 @@ public class HibernateUtil {
      *
      * @return session factory
      */
-    public static SessionFactory getSessionFactory () {
+    private static SessionFactory getSessionFactory () {
         return sessionFactory;
+    }
+    
+    public static Session openSession() {
+    	return getSessionFactory().openSession();
     }
 
     /**

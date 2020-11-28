@@ -9,6 +9,9 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 import com.paulhammant.ngwebdriver.NgWebDriver;
 
+import edu.ncsu.csc.coffee_maker.models.persistent.DomainObject;
+import edu.ncsu.csc.coffee_maker.models.persistent.Inventory;
+import edu.ncsu.csc.coffee_maker.models.persistent.Recipe;
 import junit.framework.TestCase;
 
 /**
@@ -26,6 +29,8 @@ abstract class SeleniumTest extends TestCase {
     @Override
     protected void setUp () throws Exception {
         driver = BrowserHandler.getInstance().getDriver();
+        DomainObject.deleteAll(Recipe.class);
+        DomainObject.deleteAll(Inventory.class);
     }
 
     static private boolean Mac () {

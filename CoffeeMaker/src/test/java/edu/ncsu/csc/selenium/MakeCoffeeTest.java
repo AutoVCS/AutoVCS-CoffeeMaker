@@ -76,7 +76,7 @@ public class MakeCoffeeTest extends SeleniumTest {
      */
     private boolean selectRecipe ( final String name ) throws InterruptedException {
         final List<WebElement> list = driver.findElements( By.name( "name" ) );
-        Thread.sleep( 3000 );
+        Thread.sleep( 2000 );
 
         // Select the recipe
         for ( final WebElement we : list ) {
