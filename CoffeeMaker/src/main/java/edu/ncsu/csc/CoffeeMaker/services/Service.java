@@ -1,6 +1,7 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,10 +21,16 @@ import edu.ncsu.csc.CoffeeMaker.models.DomainObject;
  * IngredientRepository) with the `@Autowired` annotation on it. You'll also
  * need to implement `getRepository()` to return this field.
  *
+ * @param <T>
+ *            Type of entity that will be handled by this service
+ * @param <K>
+ *            Type of the key for this entity
+ *
  * @author Kai Presler-Marshall
+ * @author Bruno Volpato da Cunha
  *
  */
-abstract public class Service {
+abstract public class Service <T extends DomainObject, K> {
 
     /**
      * Returns the Repository that Spring uses for interacting with the
@@ -32,7 +39,7 @@ abstract public class Service {
      *
      * @return The Repository instance from your subclass.
      */
-    abstract protected JpaRepository<DomainObject, ? extends Object> getRepository ();
+    abstract protected JpaRepository<T, K> getRepository ();
 
     /**
      * Saves the provided object into the database. If the object already
@@ -42,7 +49,7 @@ abstract public class Service {
      * @param obj
      *            The object to save into the database.
      */
-    public void save ( final DomainObject obj ) {
+    public void save ( final T obj ) {
         getRepository().saveAndFlush( obj );
     }
 
@@ -53,7 +60,7 @@ abstract public class Service {
      *
      * @return All records stored in the database.
      */
-    public List< ? extends DomainObject> findAll () {
+    public List<T> findAll () {
         return getRepository().findAll();
     }
 
@@ -65,7 +72,7 @@ abstract public class Service {
      * @param objects
      *            A List of objects to save to the database.
      */
-    public void saveAll ( final List< ? extends DomainObject> objects ) {
+    public void saveAll ( final List<T> objects ) {
         getRepository().saveAll( objects );
         getRepository().flush();
     }
@@ -78,7 +85,7 @@ abstract public class Service {
      * @param obj
      *            The object to delete from the database.
      */
-    public void delete ( final DomainObject obj ) {
+    public void delete ( final T obj ) {
         getRepository().delete( obj );
     }
 
@@ -111,9 +118,24 @@ abstract public class Service {
      *            The example to match against.
      * @return All matching records found, an empty list if none were.
      */
-    protected List< ? extends DomainObject> findBy ( final Example<DomainObject> example ) {
+    protected List<T> findBy ( final Example<T> example ) {
         return getRepository().findAll( example );
 
+    }
+
+    public boolean existsById ( final K id ) {
+        return getRepository().existsById( id );
+    }
+
+    public T findById ( final K id ) {
+        if ( null == id ) {
+            return null;
+        }
+        final Optional<T> res = getRepository().findById( id );
+        if ( res.isPresent() ) {
+            return res.get();
+        }
+        return null;
     }
 
 }

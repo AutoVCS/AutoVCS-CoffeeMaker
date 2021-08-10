@@ -21,13 +21,13 @@ import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
  */
 @Component
 @Transactional
-public class InventoryService extends Service {
+public class InventoryService extends Service<Inventory, Long> {
 
     @Autowired
     private InventoryRepository inventoryRepository;
 
     @Override
-    protected JpaRepository getRepository () {
+    protected JpaRepository<Inventory, Long> getRepository () {
         return inventoryRepository;
     }
 
@@ -38,7 +38,7 @@ public class InventoryService extends Service {
      * @return the Inventory, either new or fetched
      */
     public synchronized Inventory getInventory () {
-        final List<Inventory> inventoryList = (List<Inventory>) findAll();
+        final List<Inventory> inventoryList = findAll();
         if ( inventoryList != null && inventoryList.size() == 1 ) {
             return inventoryList.get( 0 );
         }

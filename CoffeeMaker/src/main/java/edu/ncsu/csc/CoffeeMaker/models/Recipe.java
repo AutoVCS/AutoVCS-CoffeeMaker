@@ -64,6 +64,7 @@ public class Recipe extends DomainObject {
      *
      * @return the ID
      */
+    @Override
     public Long getId () {
         return id;
     }
@@ -94,7 +95,7 @@ public class Recipe extends DomainObject {
      * @param chocolate
      *            The amtChocolate to set.
      */
-    public void setChocolate ( final int chocolate ) {
+    public void setChocolate ( final Integer chocolate ) {
         this.chocolate = chocolate;
     }
 
@@ -113,7 +114,7 @@ public class Recipe extends DomainObject {
      * @param coffee
      *            The amtCoffee to set.
      */
-    public void setCoffee ( final int coffee ) {
+    public void setCoffee ( final Integer coffee ) {
         this.coffee = coffee;
     }
 
@@ -132,7 +133,7 @@ public class Recipe extends DomainObject {
      * @param milk
      *            The amtMilk to set.
      */
-    public void setMilk ( final int milk ) {
+    public void setMilk ( final Integer milk ) {
         this.milk = milk;
     }
 
@@ -151,7 +152,7 @@ public class Recipe extends DomainObject {
      * @param sugar
      *            The amtSugar to set.
      */
-    public void setSugar ( final int sugar ) {
+    public void setSugar ( final Integer sugar ) {
         this.sugar = sugar;
     }
 
@@ -189,7 +190,7 @@ public class Recipe extends DomainObject {
      * @param price
      *            The price to set.
      */
-    public void setPrice ( final int price ) {
+    public void setPrice ( final Integer price ) {
         this.price = price;
     }
 
@@ -220,7 +221,7 @@ public class Recipe extends DomainObject {
     @Override
     public int hashCode () {
         final int prime = 31;
-        int result = 1;
+        Integer result = 1;
         result = prime * result + ( ( name == null ) ? 0 : name.hashCode() );
         return result;
     }

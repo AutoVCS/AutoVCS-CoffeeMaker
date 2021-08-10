@@ -18,19 +18,19 @@ public class Inventory extends DomainObject {
     /** id for inventory entry */
     @Id
     @GeneratedValue
-    private Long id;
+    private Long    id;
     /** amount of coffee */
     @Min ( 0 )
-    private int  coffee;
+    private Integer coffee;
     /** amount of milk */
     @Min ( 0 )
-    private int  milk;
+    private Integer milk;
     /** amount of sugar */
     @Min ( 0 )
-    private int  sugar;
+    private Integer sugar;
     /** amount of chocolate */
     @Min ( 0 )
-    private int  chocolate;
+    private Integer chocolate;
 
     /**
      * Empty constructor for Hibernate
@@ -52,7 +52,7 @@ public class Inventory extends DomainObject {
      * @param chocolate
      *            amt of chocolate
      */
-    public Inventory ( final int coffee, final int milk, final int sugar, final int chocolate ) {
+    public Inventory ( final Integer coffee, final Integer milk, final Integer sugar, final Integer chocolate ) {
         setCoffee( coffee );
         setMilk( milk );
         setSugar( sugar );
@@ -64,6 +64,7 @@ public class Inventory extends DomainObject {
      *
      * @return long
      */
+    @Override
     public Long getId () {
         return id;
     }
@@ -83,7 +84,7 @@ public class Inventory extends DomainObject {
      *
      * @return amount of chocolate
      */
-    public int getChocolate () {
+    public Integer getChocolate () {
         return chocolate;
     }
 
@@ -94,8 +95,8 @@ public class Inventory extends DomainObject {
      * @param amtChocolate
      *            amount of chocolate to set
      */
-    public void setChocolate ( final int amtChocolate ) {
-        if ( chocolate >= 0 ) {
+    public void setChocolate ( final Integer amtChocolate ) {
+        if ( amtChocolate >= 0 ) {
             chocolate = amtChocolate;
         }
     }
@@ -110,8 +111,8 @@ public class Inventory extends DomainObject {
      * @throws IllegalArgumentException
      *             if the parameter isn't a positive integer
      */
-    public int checkChocolate ( final String chocolate ) throws IllegalArgumentException {
-        int amtChocolate = 0;
+    public Integer checkChocolate ( final String chocolate ) throws IllegalArgumentException {
+        Integer amtChocolate = 0;
         try {
             amtChocolate = Integer.parseInt( chocolate );
         }
@@ -130,7 +131,7 @@ public class Inventory extends DomainObject {
      *
      * @return amount of coffee
      */
-    public int getCoffee () {
+    public Integer getCoffee () {
         return coffee;
     }
 
@@ -140,8 +141,8 @@ public class Inventory extends DomainObject {
      * @param amtCoffee
      *            amount of coffee to set
      */
-    public void setCoffee ( final int amtCoffee ) {
-        if ( coffee >= 0 ) {
+    public void setCoffee ( final Integer amtCoffee ) {
+        if ( amtCoffee >= 0 ) {
             coffee = amtCoffee;
         }
     }
@@ -156,8 +157,8 @@ public class Inventory extends DomainObject {
      * @throws IllegalArgumentException
      *             if the parameter isn't a positive integer
      */
-    public int checkCoffee ( final String coffee ) throws IllegalArgumentException {
-        int amtCoffee = 0;
+    public Integer checkCoffee ( final String coffee ) throws IllegalArgumentException {
+        Integer amtCoffee = 0;
         try {
             amtCoffee = Integer.parseInt( coffee );
         }
@@ -176,7 +177,7 @@ public class Inventory extends DomainObject {
      *
      * @return int
      */
-    public int getMilk () {
+    public Integer getMilk () {
         return milk;
     }
 
@@ -186,8 +187,8 @@ public class Inventory extends DomainObject {
      * @param amtMilk
      *            amount of milk to set
      */
-    public void setMilk ( final int amtMilk ) {
-        if ( milk >= 0 ) {
+    public void setMilk ( final Integer amtMilk ) {
+        if ( amtMilk >= 0 ) {
             milk = amtMilk;
         }
     }
@@ -202,8 +203,8 @@ public class Inventory extends DomainObject {
      * @throws IllegalArgumentException
      *             if the parameter isn't a positive integer
      */
-    public int checkMilk ( final String milk ) throws IllegalArgumentException {
-        int amtMilk = 0;
+    public Integer checkMilk ( final String milk ) throws IllegalArgumentException {
+        Integer amtMilk = 0;
         try {
             amtMilk = Integer.parseInt( milk );
         }
@@ -222,7 +223,7 @@ public class Inventory extends DomainObject {
      *
      * @return int
      */
-    public int getSugar () {
+    public Integer getSugar () {
         return sugar;
     }
 
@@ -232,8 +233,8 @@ public class Inventory extends DomainObject {
      * @param amtSugar
      *            amount of sugar to set
      */
-    public void setSugar ( final int amtSugar ) {
-        if ( sugar >= 0 ) {
+    public void setSugar ( final Integer amtSugar ) {
+        if ( amtSugar >= 0 ) {
             sugar = amtSugar;
         }
     }
@@ -248,8 +249,8 @@ public class Inventory extends DomainObject {
      * @throws IllegalArgumentException
      *             if the parameter isn't a positive integer
      */
-    public int checkSugar ( final String sugar ) throws IllegalArgumentException {
-        int amtSugar = 0;
+    public Integer checkSugar ( final String sugar ) throws IllegalArgumentException {
+        Integer amtSugar = 0;
         try {
             amtSugar = Integer.parseInt( sugar );
         }
@@ -321,7 +322,8 @@ public class Inventory extends DomainObject {
      *            amt of chocolate
      * @return true if successful, false if not
      */
-    public boolean addIngredients ( final int coffee, final int milk, final int sugar, final int chocolate ) {
+    public boolean addIngredients ( final Integer coffee, final Integer milk, final Integer sugar,
+            final Integer chocolate ) {
         if ( coffee < 0 || milk < 0 || sugar < 0 || chocolate < 0 ) {
             throw new IllegalArgumentException( "Amount cannot be negative" );
         }

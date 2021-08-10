@@ -48,11 +48,13 @@ public class InventoryTest {
         ivt = inventoryService.getInventory();
 
         Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 550,
-                ivt.getCoffee() );
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 540, ivt.getMilk() );
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 530, ivt.getSugar() );
+                (int) ivt.getCoffee() );
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 540,
+                (int) ivt.getMilk() );
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 530,
+                (int) ivt.getSugar() );
         Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 520,
-                ivt.getChocolate() );
+                (int) ivt.getChocolate() );
 
         try {
             ivt.addIngredients( 10, 20, 30, -40 );
@@ -60,13 +62,13 @@ public class InventoryTest {
         }
         catch ( final Exception e ) {
             Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 550,
-                    ivt.getCoffee() );
+                    (int) ivt.getCoffee() );
             Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 540,
-                    ivt.getMilk() );
+                    (int) ivt.getMilk() );
             Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 530,
-                    ivt.getSugar() );
+                    (int) ivt.getSugar() );
             Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 520,
-                    ivt.getChocolate() );
+                    (int) ivt.getChocolate() );
         }
 
     }
