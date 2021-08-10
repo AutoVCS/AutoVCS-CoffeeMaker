@@ -1,4 +1,4 @@
-package edu.ncsu.csc.CoffeeMaker;
+package edu.ncsu.csc.CoffeeMaker.unit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Recipe;
 import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 

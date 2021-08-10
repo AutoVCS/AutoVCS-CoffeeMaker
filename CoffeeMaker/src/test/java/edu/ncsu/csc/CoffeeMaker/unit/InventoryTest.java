@@ -1,4 +1,4 @@
-package edu.ncsu.csc.CoffeeMaker;
+package edu.ncsu.csc.CoffeeMaker.unit;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.ncsu.csc.CoffeeMaker.TestConfig;
 import edu.ncsu.csc.CoffeeMaker.models.Inventory;
 import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 
