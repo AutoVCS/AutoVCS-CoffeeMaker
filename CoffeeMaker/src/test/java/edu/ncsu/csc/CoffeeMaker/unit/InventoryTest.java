@@ -36,39 +36,125 @@ public class InventoryTest {
 
     @Test
     @Transactional
-    public void testUpdateInventory () {
-
+    public void testAddInventory1 () {
         Inventory ivt = inventoryService.getInventory();
 
-        ivt.addIngredients( 50, 40, 30, 20 );
+        ivt.addIngredients( 5, 3, 7, 2 );
 
         /* Save and retrieve again to update with DB */
         inventoryService.save( ivt );
 
         ivt = inventoryService.getInventory();
 
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 550,
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values for coffee", 505,
                 (int) ivt.getCoffee() );
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 540,
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values for milk", 503,
                 (int) ivt.getMilk() );
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 530,
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values sugar", 507,
                 (int) ivt.getSugar() );
-        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values", 520,
+        Assert.assertEquals( "Adding to the inventory should result in correctly-updated values chocolate", 502,
                 (int) ivt.getChocolate() );
 
+    }
+
+    @Test
+    @Transactional
+    public void testAddInventory2 () {
+        final Inventory ivt = inventoryService.getInventory();
+
         try {
-            ivt.addIngredients( 10, 20, 30, -40 );
-            Assert.fail( "Trying to make an invalid update to the inventory should throw an exception" );
+            ivt.addIngredients( -5, 3, 7, 2 );
         }
-        catch ( final Exception e ) {
-            Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 550,
-                    (int) ivt.getCoffee() );
-            Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 540,
-                    (int) ivt.getMilk() );
-            Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 530,
-                    (int) ivt.getSugar() );
-            Assert.assertEquals( "Trying to add a negative value to the inventory should result in no updates", 520,
-                    (int) ivt.getChocolate() );
+        catch ( final IllegalArgumentException iae ) {
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- coffee",
+                    500, (int) ivt.getCoffee() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- milk",
+                    500, (int) ivt.getMilk() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- sugar",
+                    500, (int) ivt.getSugar() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for coffee should result in no changes -- chocolate",
+                    500, (int) ivt.getChocolate() );
+        }
+    }
+
+    @Test
+    @Transactional
+    public void testAddInventory3 () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        try {
+            ivt.addIngredients( 5, -3, 7, 2 );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- coffee",
+                    500, (int) ivt.getCoffee() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- milk",
+                    500, (int) ivt.getMilk() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- sugar",
+                    500, (int) ivt.getSugar() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for milk should result in no changes -- chocolate",
+                    500, (int) ivt.getChocolate() );
+
+        }
+
+    }
+
+    @Test
+    @Transactional
+    public void testAddInventory4 () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        try {
+            ivt.addIngredients( 5, 3, -7, 2 );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- coffee",
+                    500, (int) ivt.getCoffee() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- milk",
+                    500, (int) ivt.getMilk() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- sugar",
+                    500, (int) ivt.getSugar() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for sugar should result in no changes -- chocolate",
+                    500, (int) ivt.getChocolate() );
+
+        }
+
+    }
+
+    @Test
+    @Transactional
+    public void testAddInventory5 () {
+        final Inventory ivt = inventoryService.getInventory();
+
+        try {
+            ivt.addIngredients( 5, 3, 7, -2 );
+        }
+        catch ( final IllegalArgumentException iae ) {
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- coffee",
+                    500, (int) ivt.getCoffee() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- milk",
+                    500, (int) ivt.getMilk() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- sugar",
+                    500, (int) ivt.getSugar() );
+            Assert.assertEquals(
+                    "Trying to update the Inventory with an invalid value for chocolate should result in no changes -- chocolate",
+                    500, (int) ivt.getChocolate() );
+
         }
 
     }
