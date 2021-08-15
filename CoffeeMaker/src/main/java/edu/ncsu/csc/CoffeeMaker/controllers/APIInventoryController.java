@@ -26,6 +26,10 @@ import edu.ncsu.csc.CoffeeMaker.services.InventoryService;
 @RestController
 public class APIInventoryController extends APIController {
 
+    /**
+     * InventoryService object, to be autowired in by Spring to allow for
+     * manipulating the Inventory model
+     */
     @Autowired
     private InventoryService service;
 

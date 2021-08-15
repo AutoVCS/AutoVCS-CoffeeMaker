@@ -123,10 +123,24 @@ abstract public class Service <T extends DomainObject, K> {
 
     }
 
+    /**
+     * Checks to see if an object with the provided ID exists or not
+     * 
+     * @param id
+     *            Id to check for existence of
+     * @return If the object was found
+     */
     public boolean existsById ( final K id ) {
         return getRepository().existsById( id );
     }
 
+    /**
+     * Finds an object with the provided ID
+     * 
+     * @param id
+     *            ID of the object to find
+     * @return The found object, null if none
+     */
     public T findById ( final K id ) {
         if ( null == id ) {
             return null;

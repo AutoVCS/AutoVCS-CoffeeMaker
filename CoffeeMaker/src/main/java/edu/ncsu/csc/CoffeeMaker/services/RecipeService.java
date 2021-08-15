@@ -21,6 +21,10 @@ import edu.ncsu.csc.CoffeeMaker.repositories.RecipeRepository;
 @Transactional
 public class RecipeService extends Service<Recipe, Long> {
 
+    /**
+     * RecipeRepository, to be autowired in by Spring and provide CRUD
+     * operations on Recipe model.
+     */
     @Autowired
     private RecipeRepository recipeRepository;
 
@@ -29,6 +33,13 @@ public class RecipeService extends Service<Recipe, Long> {
         return recipeRepository;
     }
 
+    /**
+     * Find a recipe with the provided name
+     * 
+     * @param name
+     *            Name of the recipe to find
+     * @return found recipe, null if none
+     */
     public Recipe findByName ( final String name ) {
         return recipeRepository.findByName( name );
     }

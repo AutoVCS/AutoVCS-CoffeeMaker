@@ -30,6 +30,10 @@ import edu.ncsu.csc.CoffeeMaker.services.RecipeService;
 @RestController
 public class APIRecipeController extends APIController {
 
+    /**
+     * RecipeService object, to be autowired in by Spring to allow for
+     * manipulating the Recipe model
+     */
     @Autowired
     private RecipeService service;
 
@@ -40,7 +44,7 @@ public class APIRecipeController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/recipes" )
     public List<Recipe> getRecipes () {
-        return (List<Recipe>) service.findAll();
+        return service.findAll();
     }
 
     /**

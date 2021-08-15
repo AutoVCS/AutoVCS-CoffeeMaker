@@ -23,6 +23,10 @@ import edu.ncsu.csc.CoffeeMaker.repositories.InventoryRepository;
 @Transactional
 public class InventoryService extends Service<Inventory, Long> {
 
+    /**
+     * InventoryRepository, to be autowired in by Spring and provide CRUD
+     * operations on Inventory model.
+     */
     @Autowired
     private InventoryRepository inventoryRepository;
 
