@@ -1,12 +1,8 @@
 package edu.ncsu.csc.CoffeeMaker.services;
 
-import java.util.NoSuchElementException;
-
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
@@ -23,8 +19,12 @@ import edu.ncsu.csc.CoffeeMaker.repositories.RecipeRepository;
  */
 @Component
 @Transactional
-public class RecipeService extends Service {
+public class RecipeService extends Service<Recipe, Long> {
 
+    /**
+     * RecipeRepository, to be autowired in by Spring and provide CRUD
+     * operations on Recipe model.
+     */
     @Autowired
     private RecipeRepository recipeRepository;
 
@@ -33,21 +33,15 @@ public class RecipeService extends Service {
         return recipeRepository;
     }
 
+    /**
+     * Find a recipe with the provided name
+     * 
+     * @param name
+     *            Name of the recipe to find
+     * @return found recipe, null if none
+     */
     public Recipe findByName ( final String name ) {
-        final Recipe recipe = new Recipe();
-        recipe.setName( name );
-
-        final ExampleMatcher matcher = ExampleMatcher.matching().withMatcher( "name",
-                ExampleMatcher.GenericPropertyMatchers.exact() );
-
-        final Example<Recipe> example = Example.of( recipe, matcher );
-
-        try {
-            return recipeRepository.findOne( example ).get();
-        }
-        catch ( final NoSuchElementException nsee ) {
-            return null;
-        }
+        return recipeRepository.findByName( name );
     }
 
 }

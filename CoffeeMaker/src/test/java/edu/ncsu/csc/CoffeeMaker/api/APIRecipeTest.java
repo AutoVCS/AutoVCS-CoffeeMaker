@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import javax.transaction.Transactional;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +63,64 @@ public class APIRecipeTest {
         mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( r ) ) ).andExpect( status().isOk() );
 
+    }
+
+    @Test
+    @Transactional
+    public void testAddRecipe2 () throws Exception {
+
+        /* Tests a recipe with a duplicate name to make sure it's rejected */
+
+        Assert.assertEquals( "There should be no Recipes in the CoffeeMaker", 0, service.findAll().size() );
+        final String name = "Coffee";
+        final Recipe r1 = createRecipe( name, 50, 3, 1, 1, 0 );
+
+        service.save( r1 );
+
+        final Recipe r2 = createRecipe( name, 50, 3, 1, 1, 0 );
+        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r2 ) ) ).andExpect( status().is4xxClientError() );
+
+        Assert.assertEquals( "There should only one recipe in the CoffeeMaker", 1, service.findAll().size() );
+    }
+
+    @Test
+    @Transactional
+    public void testAddRecipe15 () throws Exception {
+
+        /* Tests to make sure that our cap of 3 recipes is enforced */
+
+        Assert.assertEquals( "There should be no Recipes in the CoffeeMaker", 0, service.findAll().size() );
+
+        final Recipe r1 = createRecipe( "Coffee", 50, 3, 1, 1, 0 );
+        service.save( r1 );
+        final Recipe r2 = createRecipe( "Mocha", 50, 3, 1, 1, 2 );
+        service.save( r2 );
+        final Recipe r3 = createRecipe( "Latte", 60, 3, 2, 2, 0 );
+        service.save( r3 );
+
+        Assert.assertEquals( "Creating three recipes should result in three recipes in the database", 3,
+                service.count() );
+
+        final Recipe r4 = createRecipe( "Hot Chocolate", 75, 0, 2, 1, 2 );
+
+        mvc.perform( post( "/api/v1/recipes" ).contentType( MediaType.APPLICATION_JSON )
+                .content( TestUtils.asJsonString( r4 ) ) ).andExpect( status().isInsufficientStorage() );
+
+        Assert.assertEquals( "Creating a fourth recipe should not get saved", 3, service.count() );
+    }
+
+    private Recipe createRecipe ( final String name, final Integer price, final Integer coffee, final Integer milk,
+            final Integer sugar, final Integer chocolate ) {
+        final Recipe recipe = new Recipe();
+        recipe.setName( name );
+        recipe.setPrice( price );
+        recipe.setCoffee( coffee );
+        recipe.setMilk( milk );
+        recipe.setSugar( sugar );
+        recipe.setChocolate( chocolate );
+
+        return recipe;
     }
 
 }
