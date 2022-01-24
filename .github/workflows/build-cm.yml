@@ -92,11 +92,11 @@ jobs:
       
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: engr-csc326-itrust/action-surefire-report@v1
+        uses: engr-csc326-itrust/action-surefire-report@v1.02
           
       - name: Add coverage to PR
         id: publishJacoco
-        uses: engr-csc326-itrust/jacoco-report@v1
+        uses: engr-csc326-itrust/jacoco-report@v1.02
         with:
           paths: ${{ github.workspace }}/CoffeeMaker/target/site/jacoco-ut/jacoco.xml
           token: ${{ secrets.GITHUB_TOKEN }}
